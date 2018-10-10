@@ -49,8 +49,7 @@
                     <input type="text"
                        class="form-control"
                        style="width:200px; margin:20px 10px 10px 10px;"
-                       placeholder="Order number"
-                       onkeyup="verify_number(this)">
+                       placeholder="Order number">
 
                     <select class="form-control" style="width:200px; margin:10px 10px 20px 10px;">
                         <option>Invoice</option>
@@ -59,14 +58,16 @@
                         <option>Packing slip</option>
                     </select>
 
-             		<input type="submit"
+             		<input type="button"
                        class="form-control btn-success"
                        style="width:300px; margin:10px;"
+                       onclick="document.location.href='/cgi/api.pl?order=SO345372&invoice=2'"
                        value="Download Invoice">
 
-                    <input type="submit"
+                    <input type="button"
                        class="form-control btn-success"
                        style="width:300px; margin:10px;"
+                       onclick="window.print()" 
                        value="Print Invoice">
           	</form>
         </div>
