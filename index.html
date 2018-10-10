@@ -1,0 +1,101 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta content="IE=11.0000" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">           
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">               
+    <meta name="viewport" content="width=device-width, initial-scale=1">             
+  
+    <title>Fresh Grill Quickview Portal</title>
+    <link href="/favicon.ico" rel="icon" type="image/ico">
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/css.css" rel="stylesheet" type="text/css">
+    <link href="/css/normalize.css" rel="stylesheet">
+    <link href="/css/cutegrids.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+    <script src="/js/jquery.min.js"></script>
+      
+    <style>
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+
+        .odd {
+            background-color:#ddd
+        }
+    </style>
+</head>
+
+<body>
+    <!-- header class="header" -->
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="brand-logo text-center navbar-nav navbar-left">
+            <a href="/">
+        	     <img alt="logo" src="/img/logo.png">
+            </a>
+        </div>
+      </div>
+    </nav>
+    <!-- /header -->
+
+    <div class="row">
+      	<div class="cute-12-tablet">
+          	<h1 style="width:200px; margin:10px;">Invoice:</h1>
+
+          	<form action="" method="get">
+                    <input type="text"
+                       class="form-control"
+                       style="width:200px; margin:20px 10px 10px 10px;"
+                       placeholder="Order number"
+                       onkeyup="verify_number(this)">
+
+                    <select class="form-control" style="width:200px; margin:10px 10px 20px 10px;">
+                        <option>Invoice</option>
+                        <option>Invoice without prices</option>
+                        <option>Bill of lading</option>
+                        <option>Packing slip</option>
+                    </select>
+
+             		<input type="submit"
+                       class="form-control btn-success"
+                       style="width:300px; margin:10px;"
+                       value="Download Invoice">
+
+                    <input type="submit"
+                       class="form-control btn-success"
+                       style="width:300px; margin:10px;"
+                       value="Print Invoice">
+          	</form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function verify_number(t) {
+            if (t.value.match(/^(\d){1,10}$/g)) {
+                t.setCustomValidity('')
+                t.style.borderColor = ''
+                t.style.boxShadow = ''
+            } else {
+                t.setCustomValidity('Wrong number')
+                t.style.borderColor = '#FF0000'
+                t.style.boxShadow = 'inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6)'
+            }
+        }
+    </script>
+
+    <footer class="text-center"
+            style="position: absolute; 
+                   bottom: 0;
+                   width: 100%;">
+        <div class="row">
+        	<p class="copyright">© Copyright FreshGrillFoods.com 2018</p>
+        </div>
+    </footer>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed --> 
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+</html>
