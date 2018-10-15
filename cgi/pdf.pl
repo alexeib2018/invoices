@@ -50,6 +50,19 @@ $pdf->addText("Invoice Date: $invoice{'Date'}");
 reset_font();
 
 
+my @lines = split_text('The Brown Bag Sandwich', 100);
+for (my $i = 0; $i <= $#lines; $i++) {
+  $pdf->setAddTextPos($margin, $yPos - 16*$i);
+  $pdf->addText( $lines[$i] );
+}
+
+
+$yPos -= 50;
+
+$pdf->setAddTextPos($margin, $yPos);
+$pdf->addText( $lines[0] );
+
+
 $yPos -= 200;
 
 my $notice1 = "The Brown Bag Sandwich Company liability shall be limited exclusively to replacing the purchased product (only) in question without
@@ -78,6 +91,19 @@ print $pdf->Finish(\&footer);
 
 exit;
 
+
+sub split_text {
+  my $text = shift;
+  my $width = shift;
+
+  my $w = $pdf->getStringWidth($text);
+
+  my @lines = ();
+  push @lines, $text;
+  push @lines, "$w";
+
+  return @lines;
+}
 
 sub reset_font {
   $pdf->setAlign('Left');
