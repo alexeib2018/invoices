@@ -4,7 +4,14 @@ use warnings;
 use PDF::Report;
 
 my %invoice = ("Number" => "SO345372",
-               "Date" => "2018-10-09");
+               "Date" => "2018-10-09",
+               "billToName" => "Chevron #5212 McLane Southern California #812131",
+               "billToAddress" => "220 Sycamore Rd",
+               "billToCity" => "San Ysidro CA 92173",
+               "shipToName" => "Chevron #5212 McLane Southern California #812131",
+               "shipToAddress" => "220 Sycamore Rd",
+               "shipToCity" => "San Ysidro CA 92173"
+               );
 
 my $pdf = new PDF::Report(PageSize => "letter",
                           PageOrientation => "portrait");
@@ -12,24 +19,25 @@ my $pdf = new PDF::Report(PageSize => "letter",
 reset_font();
 my ($width, $height) = $pdf->getPageDimensions();
 my $margin = 15;
-my $yPos = $height - $margin - 16;
+my $lh = 13;
+my $yPos = $height - $margin - $lh;
 
 for (1 .. 1) {
   $pdf->newpage();
 }
 
 
-$yPos -= 16;
+$yPos -= $lh;
 
 $pdf->setAddTextPos($margin, $yPos);
 $pdf->addText("Fresh Grill/Brown Bag");
-$pdf->setAddTextPos($margin, $yPos - 16);
+$pdf->setAddTextPos($margin, $yPos - $lh);
 $pdf->addText("111 E. Garry Ave");
-$pdf->setAddTextPos($margin, $yPos - 16*2);
+$pdf->setAddTextPos($margin, $yPos - $lh*2);
 $pdf->addText("Santa Ana, CA 92707");
-$pdf->setAddTextPos($margin, $yPos - 16*3);
+$pdf->setAddTextPos($margin, $yPos - $lh*3);
 $pdf->addText("Phone: 714-444-2126");
-$pdf->setAddTextPos($margin, $yPos - 16*4);
+$pdf->setAddTextPos($margin, $yPos - $lh*4);
 $pdf->addText("Fax: 714-444-2667");
 
 $pdf->setSize(20);
@@ -40,21 +48,40 @@ $pdf->setAddTextPos($width/2, $yPos - 25 - 9);
 $pdf->addText("BILL OF LADING");
 reset_font();
 
-$pdf->addImgScaled("../img/logo.png", $width - 165 - $margin, $yPos - 16*2, 0.4);
+$pdf->addImgScaled("../img/logo.png", $width - 165 - $margin, $yPos - $lh*2.5, 0.4);
 
-$yPos -= 16*5;
+$yPos -= $lh*5;
 
 $pdf->setAlign("Right");
 $pdf->setAddTextPos($width-$margin, $yPos);
 $pdf->addText("Invoice Number: $invoice{'Number'}");
-$pdf->setAddTextPos($width-$margin, $yPos - 16);
+$pdf->setAddTextPos($width-$margin, $yPos - $lh);
 $pdf->addText("Invoice Date: $invoice{'Date'}");
 reset_font();
+
+$yPos -= $lh*2;
+
+$pdf->setAddTextPos($margin, $yPos);
+$pdf->addText("Bill");
+$pdf->setAddTextPos($margin, $yPos - $lh);
+$pdf->addText("To:");
+$pdf->setAddTextPos($margin + 20, $yPos - $lh);
+$pdf->addText($invoice{'billToName'});
+$pdf->setAddTextPos($margin + 20, $yPos - $lh*2);
+$pdf->addText($invoice{'billToAddress'});
+$pdf->setAddTextPos($margin + 20, $yPos - $lh*3);
+$pdf->addText($invoice{'billToCity'});
+
+$yPos -= $lh * 5;
+
+$pdf->setGfxLineWidth(2);
+$pdf->drawLine($margin, $yPos, $width-$margin, $yPos);
+$pdf->setGfxLineWidth(1);
 
 
 # my @lines = split_text('The Brown Bag Sandwich', 100);
 # for (my $i = 0; $i <= $#lines; $i++) {
-#   $pdf->setAddTextPos($margin, $yPos - 16*$i);
+#   $pdf->setAddTextPos($margin, $yPos - $lh*$i);
 #   $pdf->addText( $lines[$i] );
 # }
 #
@@ -81,11 +108,11 @@ my $notice3 = "NOTICE: Past due invoices as well as any judgments arising from t
  expenses as part of an action to collect on this invoice. Actual  attorney`s  fees  incurred  in  bringing  any  action  to  collect  on  this  invoice
  and/or enforcing any judgment granted and interest shall be considered as additional sums owed in connection with this transaction.";
 
-$pdf->addParagraph($notice1, $margin, $yPos, $width-$margin*2,  80, 25, 16);
+$pdf->addParagraph($notice1, $margin, $yPos, $width-$margin*2,  80, 25, $lh);
 $yPos -= 80;
-$pdf->addParagraph($notice2, $margin, $yPos, $width-$margin*2,  80, 25, 16);
+$pdf->addParagraph($notice2, $margin, $yPos, $width-$margin*2,  80, 25, $lh);
 $yPos -= 96;
-$pdf->addParagraph($notice3, $margin, $yPos, $width-$margin*2, 100, 25, 16);
+$pdf->addParagraph($notice3, $margin, $yPos, $width-$margin*2, 100, 25, $lh);
 $yPos -= 96;
 
 print "Content-Type: application/pdf\n\n";
@@ -110,7 +137,7 @@ sub split_text {
 sub reset_font {
   $pdf->setAlign('Left');
   $pdf->setFont('Helvetica');
-  $pdf->setSize(13);  
+  $pdf->setSize(10);  
 }
 
 sub footer {
