@@ -3,8 +3,8 @@ use strict;
 use warnings;
 use PDF::Report;
 
-my %invoice = ('Number' => 'SO345372',
-               'Date' => '2018-10-09');
+my %invoice = ("Number" => "SO345372",
+               "Date" => "2018-10-09");
 
 my $pdf = new PDF::Report(PageSize => "letter",
                           PageOrientation => "portrait");
@@ -33,16 +33,18 @@ $pdf->setAddTextPos($margin, $yPos - 16*4);
 $pdf->addText("Fax: 714-444-2667");
 
 $pdf->setSize(20);
-$pdf->setAlign('Center');
+$pdf->setAlign("Center");
 $pdf->setAddTextPos($width/2, $yPos - 9);
 $pdf->addText("INVOICE /");
 $pdf->setAddTextPos($width/2, $yPos - 25 - 9);
 $pdf->addText("BILL OF LADING");
 reset_font();
 
+$pdf->addImgScaled("../img/logo.png", $width - 165 - $margin, $yPos - 16*2, 0.4);
+
 $yPos -= 16*5;
 
-$pdf->setAlign('Right');
+$pdf->setAlign("Right");
 $pdf->setAddTextPos($width-$margin, $yPos);
 $pdf->addText("Invoice Number: $invoice{'Number'}");
 $pdf->setAddTextPos($width-$margin, $yPos - 16);
@@ -50,17 +52,17 @@ $pdf->addText("Invoice Date: $invoice{'Date'}");
 reset_font();
 
 
-my @lines = split_text('The Brown Bag Sandwich', 100);
-for (my $i = 0; $i <= $#lines; $i++) {
-  $pdf->setAddTextPos($margin, $yPos - 16*$i);
-  $pdf->addText( $lines[$i] );
-}
+# my @lines = split_text('The Brown Bag Sandwich', 100);
+# for (my $i = 0; $i <= $#lines; $i++) {
+#   $pdf->setAddTextPos($margin, $yPos - 16*$i);
+#   $pdf->addText( $lines[$i] );
+# }
+#
+# $yPos -= 50;
+#
+# $pdf->setAddTextPos($margin, $yPos);
+# $pdf->addText( $lines[0] );
 
-
-$yPos -= 50;
-
-$pdf->setAddTextPos($margin, $yPos);
-$pdf->addText( $lines[0] );
 
 
 $yPos -= 200;
