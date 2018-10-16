@@ -3,8 +3,44 @@ use strict;
 use warnings;
 use PDF::Report;
 
-my %invoice = ("Number" => "SO345372",
-               "Date" => "2018-10-09",
+my $item1 = ("itemNo" => "10237",
+             "description" => "FG Diced Onions, tub",
+             "unit" => "Each",
+             "orderQty" => "3",
+             "shippedQty" => "3",
+             "unitPrice" => "2.53",
+             "price" => "7.59",
+             "spoilageAllowance" =>"-0.38",
+             "totalAllowance" => "-1.14",
+             "totalPrice" => "6.45"
+             );
+
+my $item2 = ("itemNo" => "11047",
+             "description" => "FG Grilled Chicken Caesar Wrap",
+             "unit" => "Each",
+             "orderQty" => "1",
+             "shippedQty" => "1",
+             "unitPrice" => "2.85",
+             "price" => "2.85",
+             "spoilageAllowance" =>"-0.43",
+             "totalAllowance" => "-0.43",
+             "totalPrice" => "2.42"
+             );
+
+my $item3 = ("itemNo" => "11048",
+             "description" => "FG Zesty Turkey Wrap",
+             "unit" => "Each",
+             "orderQty" => "1",
+             "shippedQty" => "1",
+             "unitPrice" => "2.85",
+             "price" => "2.85",
+             "spoilageAllowance" =>"-0.43",
+             "totalAllowance" => "-0.43",
+             "totalPrice" => "2.42"
+             );
+
+my %invoice = ("orderNo" => "SO345372",
+               "date" => "2018-10-09",
                "billToName" => "Chevron #5212 McLane Southern California #812131",
                "billToAddress" => "220 Sycamore Rd",
                "billToCity" => "San Ysidro CA 92173",
@@ -18,7 +54,8 @@ my %invoice = ("Number" => "SO345372",
                "account" => "C0002931",
                "poNumber" => "111",
                "poDate" => "2018-10-09",
-               "salesPerson" => "HOUSE"
+               "salesPerson" => "HOUSE",
+               "items" => ($item1, $item2, $item3)
               );
 
 my $pdf = new PDF::Report(PageSize => "letter",
@@ -62,9 +99,9 @@ $yPos -= $lh * 5;
 
 $pdf->setAlign("Right");
 $pdf->setAddTextPos($width-$margin, $yPos);
-$pdf->addText("Invoice Number: $invoice{'Number'}");
+$pdf->addText("Invoice Number: $invoice{'orderNo'}");
 $pdf->setAddTextPos($width-$margin, $yPos - $lh);
-$pdf->addText("Invoice Date: $invoice{'Date'}");
+$pdf->addText("Invoice Date: $invoice{'orderDate'}");
 reset_font();
 
 $yPos -= $lh * 2;
@@ -252,9 +289,8 @@ $pdf->setAddTextPos($width - $margin - $pp, $yPos - $lh + 2);
 $pdf->addText("Total");
 $pdf->setAddTextPos($width - $margin - $pp, $yPos - $lh*2 + 4);
 $pdf->addText("Price");
-
-
 reset_font();
+
 
 
 
