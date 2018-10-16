@@ -106,13 +106,13 @@ $pdf->addText("Ship Date");
 $pdf->setAddTextPos($margin, $yPos - $lh*4);
 $pdf->addText("Due Date");
 
-$pdf->setAddTextPos($margin + 70, $yPos - $lh);
+$pdf->setAddTextPos($margin + 60, $yPos - $lh);
 $pdf->addText($invoice{'terms'});
-$pdf->setAddTextPos($margin + 70, $yPos - $lh*2);
+$pdf->setAddTextPos($margin + 60, $yPos - $lh*2);
 $pdf->addText($invoice{'shipVia'});
-$pdf->setAddTextPos($margin + 70, $yPos - $lh*3);
+$pdf->setAddTextPos($margin + 60, $yPos - $lh*3);
 $pdf->addText($invoice{'shipDate'});
-$pdf->setAddTextPos($margin + 70, $yPos - $lh*4);
+$pdf->setAddTextPos($margin + 60, $yPos - $lh*4);
 $pdf->addText($invoice{'dueDate'});
 
 $pdf->setAddTextPos($width/2 + $margin, $yPos - $lh);
@@ -124,14 +124,73 @@ $pdf->addText("P.O. Date");
 $pdf->setAddTextPos($width/2 + $margin, $yPos - $lh*4);
 $pdf->addText("Sales Person");
 
-$pdf->setAddTextPos($width/2 + $margin + 70, $yPos - $lh);
+$pdf->setAddTextPos($width/2 + $margin + 80, $yPos - $lh);
 $pdf->addText($invoice{'account'});
-$pdf->setAddTextPos($width/2 + $margin + 70, $yPos - $lh*2);
+$pdf->setAddTextPos($width/2 + $margin + 80, $yPos - $lh*2);
 $pdf->addText($invoice{'poNumber'});
-$pdf->setAddTextPos($width/2 + $margin + 70, $yPos - $lh*3);
+$pdf->setAddTextPos($width/2 + $margin + 80, $yPos - $lh*3);
 $pdf->addText($invoice{'poDate'});
-$pdf->setAddTextPos($width/2 + $margin + 70, $yPos - $lh*4);
+$pdf->setAddTextPos($width/2 + $margin + 80, $yPos - $lh*4);
 $pdf->addText($invoice{'salesPerson'});
+
+$yPos -= $lh * 6;
+
+my %table = ("itemNo" =>             5,
+             "description" =>       35,
+             "orderNo" =>            5,
+             "unit" =>               5,
+             "orderQty" =>           5,
+             "shippedQty" =>         5,
+             "unitPrice" =>          5,
+             "price" =>              5,
+             "spoilageAllowance" => 10,
+             "totalAllowance" =>    10,
+             "totalPrice" =>        10
+             );
+
+$table{'description'}       += $table{'itemNo'};
+$table{'orderNo'}           += $table{'description'};
+$table{'unit'}              += $table{'orderNo'};
+$table{'orderQty'}          += $table{'unit'};
+$table{'shippedQty'}        += $table{'orderQty'};
+$table{'unitPrice'}         += $table{'shippedQty'};
+$table{'price'}             += $table{'unitPrice'};
+$table{'spoilageAllowance'} += $table{'price'};
+$table{'totalAllowance'}    += $table{'spoilageAllowance'};
+$table{'totalPrice'}        += $table{'totalAllowance'};
+
+$table{'itemNo'}            *= 0.01 * ($width-2*$margin);
+$table{'description'}       *= 0.01 * ($width-2*$margin);
+$table{'orderNo'}           *= 0.01 * ($width-2*$margin);
+$table{'unit'}              *= 0.01 * ($width-2*$margin);
+$table{'orderQty'}          *= 0.01 * ($width-2*$margin);
+$table{'shippedQty'}        *= 0.01 * ($width-2*$margin);
+$table{'unitPrice'}         *= 0.01 * ($width-2*$margin);
+$table{'price'}             *= 0.01 * ($width-2*$margin);
+$table{'spoilageAllowance'} *= 0.01 * ($width-2*$margin);
+$table{'totalAllowance'}    *= 0.01 * ($width-2*$margin);
+$table{'totalPrice'}        *= 0.01 * ($width-2*$margin);
+
+my $hh = $lh*2;
+$pdf->shadeRect($margin, $yPos, $width-$margin, $yPos - $hh, '#AAA');
+$pdf->shadeRect($margin, $yPos, $margin, $yPos, '#000');    # Reset color
+$pdf->drawLine($margin, $yPos, $width-$margin, $yPos);
+$pdf->drawLine($margin, $yPos - $hh, $width-$margin, $yPos - $hh);
+$pdf->drawLine($margin, $yPos, $margin, $yPos - $hh);
+$pdf->drawLine($margin + $table{'itemNo'},            $yPos, $margin + $table{'itemNo'},            $yPos - $hh);
+$pdf->drawLine($margin + $table{'description'},       $yPos, $margin + $table{'description'},       $yPos - $hh);
+$pdf->drawLine($margin + $table{'orderNo'},           $yPos, $margin + $table{'orderNo'},           $yPos - $hh);
+$pdf->drawLine($margin + $table{'unit'},              $yPos, $margin + $table{'unit'},              $yPos - $hh);
+$pdf->drawLine($margin + $table{'orderQty'},          $yPos, $margin + $table{'orderQty'},          $yPos - $hh);
+$pdf->drawLine($margin + $table{'shippedQty'},        $yPos, $margin + $table{'shippedQty'},        $yPos - $hh);
+$pdf->drawLine($margin + $table{'unitPrice'},         $yPos, $margin + $table{'unitPrice'},         $yPos - $hh);
+$pdf->drawLine($margin + $table{'price'},             $yPos, $margin + $table{'price'},             $yPos - $hh);
+$pdf->drawLine($margin + $table{'spoilageAllowance'}, $yPos, $margin + $table{'spoilageAllowance'}, $yPos - $hh);
+$pdf->drawLine($margin + $table{'totalAllowance'},    $yPos, $margin + $table{'totalAllowance'},    $yPos - $hh);
+$pdf->drawLine($margin + $table{'totalPrice'},        $yPos, $margin + $table{'totalPrice'},        $yPos - $hh);
+
+my $pp = 5;
+
 
 
 
