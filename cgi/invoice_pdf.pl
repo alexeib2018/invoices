@@ -56,7 +56,11 @@ my %invoice = ("orderNo" => "SO345372",
                "account" => "C0002931",
                "poNumber" => "111",
                "poDate" => "2018-10-09",
-               "salesPerson" => "HOUSE"
+               "salesPerson" => "HOUSE",
+               "subtotal" => "13.29",
+               "totalAllowance" => "-2.00",
+               "tax" => "0.00",
+               "total" => "11.29"
               );
 
 my $pdf = new PDF::Report(PageSize => "letter",
@@ -324,6 +328,47 @@ for (my $i = 0; $i <= $#items; $i++) {
   $yPos -= $lh + 2;
 }
 
+$yPos -= $lh;
+
+$pdf->setAlign('Right');
+
+$pdf->setAddTextPos($width - $margin - 50, $yPos);
+$pdf->addText("Subtotal:");
+$pdf->setAddTextPos($width - $margin - $pp, $yPos);
+$pdf->addText($invoice{'subtotal'});
+
+$yPos -= $lh;
+
+$pdf->setAddTextPos($width - $margin - 50, $yPos);
+$pdf->addText("Total Allowance:");
+$pdf->setAddTextPos($width - $margin - $pp, $yPos);
+$pdf->addText($invoice{'totalAllowance'});
+
+$yPos -= $lh;
+
+$pdf->setAddTextPos($width - $margin - 50, $yPos);
+$pdf->addText("Tax:");
+$pdf->setAddTextPos($width - $margin - $pp, $yPos);
+$pdf->addText($invoice{'tax'});
+
+$yPos -= $lh;
+
+$pdf->setAddTextPos($width - $margin - 50, $yPos);
+$pdf->addText("Total:");
+$pdf->setAddTextPos($width - $margin - $pp, $yPos);
+$pdf->addText($invoice{'total'});
+
+$pdf->setAddTextPos($margin + 8, $yPos + 3);
+$pdf->addText("X");
+
+$pdf->setGfxLineWidth(2);
+$pdf->drawLine($margin, $yPos, $width - $margin - 150, $yPos);
+$pdf->setGfxLineWidth(1);
+
+reset_font();
+
+$yPos -= $lh*3;
+
 
 # for (my $i = 0; $i <= $#lines; $i++) {
 #   $pdf->setAddTextPos($margin, $yPos - $lh*$i);
@@ -335,9 +380,6 @@ for (my $i = 0; $i <= $#items; $i++) {
 # $pdf->setAddTextPos($margin, $yPos);
 # $pdf->addText( $lines[0] );
 
-
-
-$yPos -= 200;
 
 my $notice1 = "The Brown Bag Sandwich Company liability shall be limited exclusively to replacing the purchased product (only) in question without
  charge. The buyer by accepting the merchandise will assume all liability for any damages which may result from its use or misuse by
