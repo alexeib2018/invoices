@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use PDF::Report;
 
-my $item1 = ("itemNo" => "10237",
+my $item1 = {"itemNo" => "10237",
              "description" => "FG Diced Onions, tub",
              "unit" => "Each",
              "orderQty" => "3",
@@ -13,9 +13,9 @@ my $item1 = ("itemNo" => "10237",
              "spoilageAllowance" =>"-0.38",
              "totalAllowance" => "-1.14",
              "totalPrice" => "6.45"
-             );
+             };
 
-my $item2 = ("itemNo" => "11047",
+my $item2 = {"itemNo" => "11047",
              "description" => "FG Grilled Chicken Caesar Wrap",
              "unit" => "Each",
              "orderQty" => "1",
@@ -25,9 +25,9 @@ my $item2 = ("itemNo" => "11047",
              "spoilageAllowance" =>"-0.43",
              "totalAllowance" => "-0.43",
              "totalPrice" => "2.42"
-             );
+             };
 
-my $item3 = ("itemNo" => "11048",
+my $item3 = {"itemNo" => "11048",
              "description" => "FG Zesty Turkey Wrap",
              "unit" => "Each",
              "orderQty" => "1",
@@ -37,10 +37,12 @@ my $item3 = ("itemNo" => "11048",
              "spoilageAllowance" =>"-0.43",
              "totalAllowance" => "-0.43",
              "totalPrice" => "2.42"
-             );
+             };
+
+my @items = ($item1, $item2, $item3);
 
 my %invoice = ("orderNo" => "SO345372",
-               "date" => "2018-10-09",
+               "orderDate" => "2018-10-09",
                "billToName" => "Chevron #5212 McLane Southern California #812131",
                "billToAddress" => "220 Sycamore Rd",
                "billToCity" => "San Ysidro CA 92173",
@@ -54,8 +56,7 @@ my %invoice = ("orderNo" => "SO345372",
                "account" => "C0002931",
                "poNumber" => "111",
                "poDate" => "2018-10-09",
-               "salesPerson" => "HOUSE",
-               "items" => ($item1, $item2, $item3)
+               "salesPerson" => "HOUSE"
               );
 
 my $pdf = new PDF::Report(PageSize => "letter",
@@ -172,17 +173,17 @@ $pdf->addText($invoice{'salesPerson'});
 
 $yPos -= $lh * 6;
 
-my %table = ("itemNo" =>             5,
-             "description" =>       29,
+my %table = ("itemNo" =>             6,
+             "description" =>       27,
              "orderNo" =>           10,
              "unit" =>               5,
-             "orderQty" =>           8,
+             "orderQty" =>           6,
              "shippedQty" =>         8,
-             "unitPrice" =>          5,
-             "price" =>              5,
+             "unitPrice" =>          6,
+             "price" =>              6,
              "spoilageAllowance" => 10,
              "totalAllowance" =>    10,
-             "totalPrice" =>         5
+             "totalPrice" =>         6
              );
 
 $table{'description'}       += $table{'itemNo'};
@@ -291,11 +292,39 @@ $pdf->setAddTextPos($width - $margin - $pp, $yPos - $lh*2 + 4);
 $pdf->addText("Price");
 reset_font();
 
+$yPos -= $lh * 3 -1;
+
+for (my $i = 0; $i <= $#items; $i++) {
+  $pdf->setAddTextPos($margin + $pp, $yPos);
+  $pdf->addText($items[$i]{'itemNo'});
+  $pdf->setAddTextPos($margin + $table{'description'} + $pp, $yPos);
+  $pdf->addText($items[$i]{'description'});
+  $pdf->setAddTextPos($margin + $table{'orderNo'} + $pp, $yPos);
+  $pdf->addText($invoice{'orderNo'});
+  $pdf->setAddTextPos($margin + $table{'unit'} + $pp, $yPos);
+  $pdf->addText($items[$i]{'unit'});
+  $pdf->setAlign('Right');
+  $pdf->setAddTextPos($margin + $table{'shippedQty'} - $pp, $yPos);
+  $pdf->addText($items[$i]{'orderQty'});
+  $pdf->setAddTextPos($margin + $table{'unitPrice'} - $pp, $yPos);
+  $pdf->addText($items[$i]{'shippedQty'});
+  $pdf->setAddTextPos($margin + $table{'price'} - $pp, $yPos);
+  $pdf->addText($items[$i]{'unitPrice'});
+  $pdf->setAddTextPos($margin + $table{'spoilageAllowance'} - $pp, $yPos);
+  $pdf->addText($items[$i]{'price'});
+  $pdf->setAddTextPos($margin + $table{'totalAllowance'} - $pp, $yPos);
+  $pdf->addText($items[$i]{'spoilageAllowance'});
+  $pdf->setAddTextPos($margin + $table{'totalPrice'} - $pp, $yPos);
+  $pdf->addText($items[$i]{'totalAllowance'});
+  $pdf->setAddTextPos($width - $margin - $pp, $yPos);
+  $pdf->addText($items[$i]{'totalPrice'});
+  $pdf->setAlign('Left');
+  $pdf->drawLine($margin, $yPos -4, $width - $margin, $yPos -4);
+
+  $yPos -= $lh + 2;
+}
 
 
-
-
-# my @lines = split_text('The Brown Bag Sandwich', 100);
 # for (my $i = 0; $i <= $#lines; $i++) {
 #   $pdf->setAddTextPos($margin, $yPos - $lh*$i);
 #   $pdf->addText( $lines[$i] );
