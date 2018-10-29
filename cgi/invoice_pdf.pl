@@ -3,6 +3,43 @@ use strict;
 use warnings;
 use PDF::Report;
 
+# Load data from tables:
+#
+# A.1)  No_                                     invoice_orders.order_no
+# =H.8 document_date                            invoice_orders.order_date
+# B.2)  Sell-to Customer No_                    invoice_orders.account
+# J.10) Bill_To_Name                            invoice_orders.bill_to_name
+# K.11) Bill_To_Address1                        invoice_orders.bill_to_address
+# L.12) Bill_To_Address2                        invoice_orders.bill_to_city
+# M.13) Ship_To_Name                            invoice_orders.ship_to_name
+# N.14) Ship_To_Address1                        invoice_orders.ship_to_address
+# O.15) Ship_To_Address2                        invoice_orders.ship_to_city
+# C.3)  Terms (Payment Terms Code)              invoice_orders.terms
+# F.6)  Shipment Method Code                    invoice_orders.ship_via
+# D.4)  shipment_date                           invoice_orders.ship_date
+# E.5)  due_date                                invoice_orders.due_date
+# G.7)  P.O. Number (External Document No_)     invoice_orders.po_number
+# H.8)  P.O. Date (document_date)               invoice_orders.po_date
+# I.9)  Salesperson Code                        invoice_orders.sales_person
+#                                               invoice_orders.allowance_percent
+#                                               invoice_orders.subtotal
+#                                               invoice_orders.total_allowance
+#                                               invoice_orders.tax
+#                                               invoice_orders.total
+#
+# R.18) No_                                     invoice_items.order_no
+# Q.17) f(Description)                          invoice_items.shipment_no
+# P.16) No_                                     invoice_items.item_no
+# Q.17) Description                             invoice_items.description
+# S.18) Unit of Measure                         invoice_items.unit
+# U.20) qty                                     invoice_items.order_qty
+# =U.20 qty                                     invoice_items.shipped_qty
+# V.21) unit_price                              invoice_items.unit_price
+# = qty * unit_price                            invoice_items.price
+# = - unit_price * allowance_percent / 100      invoice_items.spoilage_allowance
+# = qty * spoilage_allowance                    invoice_items.total_allowance
+# = price + total_allowance                     invoice_items.total_price
+
 my $item1 = {"itemNo" => "10237",
              "description" => "FG Diced Onions, tub",
              "unit" => "Each",
