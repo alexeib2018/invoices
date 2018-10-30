@@ -15,7 +15,19 @@
     <link href="/css/cutegrids.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <link href="/css/print.min.css" rel="stylesheet">
-      
+
+    <!-- Include all compiled plugins (below), or include individual files as needed --> 
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/print.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <!-- Minified version of `es6-promise-auto` below. -->
+    <script src="/js/es6-promise.min.js"></script>
+    <script src="/js/es6-promise.auto.min.js"></script> 
+
     <style>
         th, td {
             padding: 5px;
@@ -29,27 +41,36 @@
 </head>
 
 <body>
-    <!-- header class="header" -->
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="brand-logo text-center navbar-nav navbar-left">
-            <a href="/">
-        	     <img alt="logo" src="/img/logo.png">
-            </a>
-        </div>
-      </div>
-    </nav>
-    <!-- /header -->
+    <div class="container" id="app">
+        <!-- header class="header" -->
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <div class="brand-logo text-center navbar-nav navbar-left">
+                <a href="/">
+            	     <img alt="logo" src="/img/logo.png">
+                </a>
+            </div>
+          </div>
+        </nav>
+        <!-- /header -->
 
-    <div class="row">
-      	<div class="cute-12-tablet">
-          	<h1 style="width:200px; margin:10px;">Invoice:</h1>
+        <div class="row">
+          	<div class="cute-12-tablet">
+              	<h1 style="width:200px; margin:10px;">Invoice:</h1>
 
-          	<form action="" method="get">
-                    <input type="text"
+              	<form action="" method="get">
+                    <!-- input type="text"
                        class="form-control"
+                       v-model="order"
                        style="width:200px; margin:20px 10px 10px 10px;"
-                       placeholder="Order number">
+                       placeholder="Order number" -->
+
+                    <select class="form-control"
+                            style="width:200px; margin:20px 10px 10px 10px;"
+                            v-model="order">
+                        <option value="">Order number</option>
+                        <option v-for="item in orders" v-bind:value="key">{{ item.account }} - {{ item.order_no }}</option>
+                    </select>
 
                     <select class="form-control" style="width:200px; margin:10px 10px 20px 10px;">
                         <option>Invoice</option>
@@ -69,8 +90,17 @@
                        style="width:300px; margin:10px;"
                        onclick="printJS('/cgi/invoice_pdf.pl?order=SO345372&invoice=2')"
                        value="Print Invoice">
-          	</form>
+              	</form>
+            </div>
         </div>
+        <footer class="text-center"
+                style="position: absolute; 
+                       bottom: 0;
+                       width: 100%;">
+            <div class="row">
+              <p class="copyright">© Copyright FreshGrillFoods.com 2018</p>
+            </div>
+        </footer>
     </div>
 
     <script type="text/javascript">
@@ -87,25 +117,23 @@
         }
     </script>
 
-    <footer class="text-center"
-            style="position: absolute; 
-                   bottom: 0;
-                   width: 100%;">
-        <div class="row">
-        	<p class="copyright">© Copyright FreshGrillFoods.com 2018</p>
-        </div>
-    </footer>
-
-    <!-- Include all compiled plugins (below), or include individual files as needed --> 
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/print.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/popper.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/vue.js"></script>
-    <script src="/js/axios.min.js"></script>
-    <!-- Minified version of `es6-promise-auto` below. -->
-    <script src="/js/es6-promise.min.js"></script>
-    <script src="/js/es6-promise.auto.min.js"></script> 
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: function() {
+                return {
+                    orders: [{account: 'C0000011', order_no:'SO351424'},
+                             {account: 'C0000087', order_no:'SI101670'},
+                             {account: 'C0000087', order_no:'SI101675'},
+                             {account: 'C0000087', order_no:'SO347903'},
+                             {account: 'C0000087', order_no:'SO349130'}],
+                    order: ''
+                }
+            },
+            mounted: function() {
+                // this.orders = 'SO345372'
+            }
+        })
+    </script>
 </body>
 </html>
