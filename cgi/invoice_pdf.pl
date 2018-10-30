@@ -28,7 +28,6 @@ use PDF::Report;
 #                                               invoice_orders.total
 #
 # R.18) No_                                     invoice_items.order_no
-# Q.17) f(Description)                          invoice_items.shipment_no
 # P.16) No_                                     invoice_items.item_no
 # Q.17) Description                             invoice_items.description
 # S.18) Unit of Measure                         invoice_items.unit
