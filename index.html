@@ -69,7 +69,7 @@
                             style="width:200px; margin:20px 10px 10px 10px;"
                             v-model="order">
                         <option value="">Order number</option>
-                        <option v-for="item in orders" v-bind:value="key">{{ item.account }} - {{ item.order_no }}</option>
+                        <option v-for="item in orders" v-bind:value="item.order_no">{{ item.account }} - {{ item.order_no }}</option>
                     </select>
 
                     <select class="form-control" style="width:200px; margin:10px 10px 20px 10px;">
@@ -94,7 +94,8 @@
             </div>
         </div>
         <footer class="text-center"
-                style="position: absolute; 
+                style="position: absolute;
+                       left: 0;
                        bottom: 0;
                        width: 100%;">
             <div class="row">
