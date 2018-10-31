@@ -555,14 +555,22 @@ my $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$dbhost;port=$dbport;options=
         {PrintError => 0});
 
 
-# print "Content-type: text/utf-8\n\n";
 my %form_data = get_form_data();
 my $method = $ENV{'REQUEST_METHOD'};
 if ($method == 'GET') {
-	my $order_no = $form_data{'order_no'};
+	my $order_no = $form_data{'order'};
 	my $output = $form_data{'output'};
 
-	print "Content-Type: application/pdf\n\n";
+	# print "Content-type: text/utf-8\n\n";
+	# print "order_no = $order_no\n";
+	# print "output = $output\n";
+
+	if ($output eq 'pdf') {
+		print "Content-Type: application/pdf\n\n";
+	} else {
+		print "Content-Type: application/x-download\n";
+		print "Content-Disposition: attachment;filename=invoice.pdf\n\n";
+	}
 	print generate_pdf($dbh, $order_no);
 } else {
 	my $action = $form_data{'action'};
