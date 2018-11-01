@@ -21,101 +21,11 @@ my ($width, $height) = $pdf->getPageDimensions();
 my $margin = 15;
 
 sub generate_pdf {
-	# Load data from tables:
-	#
-	# A.1)  No_                                     invoice_orders.order_no
-	# =H.8 document_date                            invoice_orders.order_date
-	# B.2)  Sell-to Customer No_                    invoice_orders.account
-	# J.10) Bill_To_Name                            invoice_orders.bill_to_name
-	# K.11) Bill_To_Address1                        invoice_orders.bill_to_address
-	# L.12) Bill_To_Address2                        invoice_orders.bill_to_city
-	# M.13) Ship_To_Name                            invoice_orders.ship_to_name
-	# N.14) Ship_To_Address1                        invoice_orders.ship_to_address
-	# O.15) Ship_To_Address2                        invoice_orders.ship_to_city
-	# C.3)  Terms (Payment Terms Code)              invoice_orders.terms
-	# F.6)  Shipment Method Code                    invoice_orders.ship_via
-	# D.4)  shipment_date                           invoice_orders.ship_date
-	# E.5)  due_date                                invoice_orders.due_date
-	# G.7)  P.O. Number (External Document No_)     invoice_orders.po_number
-	# H.8)  P.O. Date (document_date)               invoice_orders.po_date
-	# I.9)  Salesperson Code                        invoice_orders.sales_person
-	#                                               invoice_orders.allowance_percent
-	#                                               invoice_orders.subtotal
-	#                                               invoice_orders.total_allowance
-	#                                               invoice_orders.tax
-	#                                               invoice_orders.total
-	#
-	# R.18) No_                                     invoice_items.order_no
-	# P.16) No_                                     invoice_items.item_no
-	# Q.17) Description                             invoice_items.description
-	# S.18) Unit of Measure                         invoice_items.unit
-	# U.20) qty                                     invoice_items.order_qty
-	# =U.20 qty                                     invoice_items.shipped_qty
-	# V.21) unit_price                              invoice_items.unit_price
-	# = qty * unit_price                            invoice_items.price
-	# = - unit_price * allowance_percent / 100      invoice_items.spoilage_allowance
-	# = qty * spoilage_allowance                    invoice_items.total_allowance
-	# = price + total_allowance                     invoice_items.total_price
+    my $invoice_ref = shift;
+    my $items_ref = shift;
 
-	my $item1 = {"itemNo" => "10237",
-	             "description" => "FG Diced Onions, tub",
-	             "unit" => "Each",
-	             "orderQty" => "3",
-	             "shippedQty" => "3",
-	             "unitPrice" => "2.53",
-	             "price" => "7.59",
-	             "spoilageAllowance" =>"-0.38",
-	             "totalAllowance" => "-1.14",
-	             "totalPrice" => "6.45"
-	             };
-
-	my $item2 = {"itemNo" => "11047",
-	             "description" => "FG Grilled Chicken Caesar Wrap",
-	             "unit" => "Each",
-	             "orderQty" => "1",
-	             "shippedQty" => "1",
-	             "unitPrice" => "2.85",
-	             "price" => "2.85",
-	             "spoilageAllowance" =>"-0.43",
-	             "totalAllowance" => "-0.43",
-	             "totalPrice" => "2.42"
-	             };
-
-	my $item3 = {"itemNo" => "11048",
-	             "description" => "FG Zesty Turkey Wrap",
-	             "unit" => "Each",
-	             "orderQty" => "1",
-	             "shippedQty" => "1",
-	             "unitPrice" => "2.85",
-	             "price" => "2.85",
-	             "spoilageAllowance" =>"-0.43",
-	             "totalAllowance" => "-0.43",
-	             "totalPrice" => "2.42"
-	             };
-
-	my @items = ($item1, $item2, $item3);
-
-	my %invoice = ("orderNo" => "SO345372",
-	               "orderDate" => "2018-10-09",
-	               "billToName" => "Chevron #5212 McLane Southern California #812131",
-	               "billToAddress" => "220 Sycamore Rd",
-	               "billToCity" => "San Ysidro CA 92173",
-	               "shipToName" => "Chevron #5212 McLane Southern California #812131",
-	               "shipToAddress" => "220 Sycamore Rd",
-	               "shipToCity" => "San Ysidro CA 92173",
-	               "terms" => "30D",
-	               "shipVia" => "HOUSE",
-	               "shipDate" => "2018-10-09",
-	               "dueDate" => "2018-10-27",
-	               "account" => "C0002931",
-	               "poNumber" => "111",
-	               "poDate" => "2018-10-09",
-	               "salesPerson" => "HOUSE",
-	               "subtotal" => "13.29",
-	               "totalAllowance" => "-2.00",
-	               "tax" => "0.00",
-	               "total" => "11.29"
-	              );
+	my %invoice = %{ $invoice_ref };
+    my @items = @{ $items_ref };
 
 	reset_font();
 	my $lh = 13;
@@ -124,7 +34,6 @@ sub generate_pdf {
 	for (1 .. 1) {
 	  $pdf->newpage();
 	}
-
 
 	$yPos -= $lh;
 
@@ -550,6 +459,109 @@ sub get_form_data {
 	%form_results;
 }
 
+sub load_pdf_data {
+	my $dbh = shift;
+	my $order_no = shift;
+
+	# Load data from tables:
+	#
+	# A.1)  No_                                     invoice_orders.order_no
+	# =H.8 document_date                            invoice_orders.order_date
+	# B.2)  Sell-to Customer No_                    invoice_orders.account
+	# J.10) Bill_To_Name                            invoice_orders.bill_to_name
+	# K.11) Bill_To_Address1                        invoice_orders.bill_to_address
+	# L.12) Bill_To_Address2                        invoice_orders.bill_to_city
+	# M.13) Ship_To_Name                            invoice_orders.ship_to_name
+	# N.14) Ship_To_Address1                        invoice_orders.ship_to_address
+	# O.15) Ship_To_Address2                        invoice_orders.ship_to_city
+	# C.3)  Terms (Payment Terms Code)              invoice_orders.terms
+	# F.6)  Shipment Method Code                    invoice_orders.ship_via
+	# D.4)  shipment_date                           invoice_orders.ship_date
+	# E.5)  due_date                                invoice_orders.due_date
+	# G.7)  P.O. Number (External Document No_)     invoice_orders.po_number
+	# H.8)  P.O. Date (document_date)               invoice_orders.po_date
+	# I.9)  Salesperson Code                        invoice_orders.sales_person
+	#                                               invoice_orders.allowance_percent
+	#                                               invoice_orders.subtotal
+	#                                               invoice_orders.total_allowance
+	#                                               invoice_orders.tax
+	#                                               invoice_orders.total
+	#
+	# R.18) No_                                     invoice_items.order_no
+	# P.16) No_                                     invoice_items.item_no
+	# Q.17) Description                             invoice_items.description
+	# S.18) Unit of Measure                         invoice_items.unit
+	# U.20) qty                                     invoice_items.order_qty
+	# =U.20 qty                                     invoice_items.shipped_qty
+	# V.21) unit_price                              invoice_items.unit_price
+	# = qty * unit_price                            invoice_items.price
+	# = - unit_price * allowance_percent / 100      invoice_items.spoilage_allowance
+	# = qty * spoilage_allowance                    invoice_items.total_allowance
+	# = price + total_allowance                     invoice_items.total_price
+
+	my $item1 = {"itemNo" => "10237",
+	             "description" => "FG Diced Onions, tub",
+	             "unit" => "Each",
+	             "orderQty" => "3",
+	             "shippedQty" => "3",
+	             "unitPrice" => "2.53",
+	             "price" => "7.59",
+	             "spoilageAllowance" =>"-0.38",
+	             "totalAllowance" => "-1.14",
+	             "totalPrice" => "6.45"
+	             };
+
+	my $item2 = {"itemNo" => "11047",
+	             "description" => "FG Grilled Chicken Caesar Wrap",
+	             "unit" => "Each",
+	             "orderQty" => "1",
+	             "shippedQty" => "1",
+	             "unitPrice" => "2.85",
+	             "price" => "2.85",
+	             "spoilageAllowance" =>"-0.43",
+	             "totalAllowance" => "-0.43",
+	             "totalPrice" => "2.42"
+	             };
+
+	my $item3 = {"itemNo" => "11048",
+	             "description" => "FG Zesty Turkey Wrap",
+	             "unit" => "Each",
+	             "orderQty" => "1",
+	             "shippedQty" => "1",
+	             "unitPrice" => "2.85",
+	             "price" => "2.85",
+	             "spoilageAllowance" =>"-0.43",
+	             "totalAllowance" => "-0.43",
+	             "totalPrice" => "2.42"
+	             };
+
+	my @items = ($item1, $item2, $item3);
+
+	my %invoice = ("orderNo" => "SO345372",
+	               "orderDate" => "2018-10-09",
+	               "billToName" => "Chevron #5212 McLane Southern California #812131",
+	               "billToAddress" => "220 Sycamore Rd",
+	               "billToCity" => "San Ysidro CA 92173",
+	               "shipToName" => "Chevron #5212 McLane Southern California #812131",
+	               "shipToAddress" => "220 Sycamore Rd",
+	               "shipToCity" => "San Ysidro CA 92173",
+	               "terms" => "30D",
+	               "shipVia" => "HOUSE",
+	               "shipDate" => "2018-10-09",
+	               "dueDate" => "2018-10-27",
+	               "account" => "C0002931",
+	               "poNumber" => "111",
+	               "poDate" => "2018-10-09",
+	               "salesPerson" => "HOUSE",
+	               "subtotal" => "13.29",
+	               "totalAllowance" => "-2.00",
+	               "tax" => "0.00",
+	               "total" => "11.29"
+	              );
+
+    return (\%invoice, \@items);
+}
+
 
 my $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$dbhost;port=$dbport;options=$dboptions;tty=$dbtty","$username","$password",
         {PrintError => 0});
@@ -565,13 +577,16 @@ if ($method == 'GET') {
 	# print "order_no = $order_no\n";
 	# print "output = $output\n";
 
+	my ($invoice, $items) = load_pdf_data($dbh, $order_no);
+
 	if ($output eq 'pdf') {
 		print "Content-Type: application/pdf\n\n";
 	} else {
 		print "Content-Type: application/x-download\n";
 		print "Content-Disposition: attachment;filename=invoice.pdf\n\n";
 	}
-	print generate_pdf($dbh, $order_no);
+	print generate_pdf($invoice, $items);
+
 } else {
 	my $action = $form_data{'action'};
 }
