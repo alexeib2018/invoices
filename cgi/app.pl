@@ -123,6 +123,22 @@ sub new_page {
 }
 
 
+sub new_line {
+	my $offset = shift;
+	my $size = shift;
+
+	if (!defined $size) {
+		$size = $lh;
+	}
+
+	if ($yPos - $offset - $size < 30) {
+		new_page();
+	} else {
+		$yPos -= $offset;
+	}
+}
+
+
 sub generate_pdf {
     my $invoice_ref = shift;
     my $items_ref = shift;
@@ -296,7 +312,7 @@ sub generate_pdf {
 	  $pdf->setAlign('Left');
 	  $pdf->drawLine($margin, $yPos -4, $width - $margin, $yPos -4);
 
-	  $yPos -= $lh + 2;
+	  new_line($lh + 2, $lh + 2);
 	}
 	$show_table_on = 0;
 
