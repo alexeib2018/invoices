@@ -535,7 +535,7 @@ sub load_pdf_data {
 	             "totalPrice" => "2.42"
 	             };
 
-	my @items = ($item1, $item2, $item3);
+	# my @items = ($item1, $item2, $item3);
 
 	my $invoice_query = "SELECT account,
  								order_no,
@@ -594,6 +594,46 @@ sub load_pdf_data {
 	}
 	$sth->finish();
 
+
+	my $items_query = "SELECT order_no,
+ 							  item_no,
+ 							  description,
+ 							  unit,
+ 							  order_qty,
+ 							  shipped_qty,
+ 							  unit_price,
+ 							  price,
+ 							  spoilage_allowance,
+ 							  total_allowance,
+ 							  total_price
+ 						 FROM invoice_items
+ 						WHERE order_no='$order_no'
+ 					 ORDER BY id";
+
+	my $sth = $dbh->prepare($items_query);
+	my $rv = $sth->execute();
+	if (!defined $rv) {
+	  print "Error in request: " . $dbh->errstr . "\n";
+	  exit(0);
+	}
+
+	my @items;
+	while (my @array = $sth->fetchrow_array()) {
+		my $item = { 'orderNo'           => $array[ 0],
+					 'itemNo'            => $array[ 1],
+					 'description'       => $array[ 2],
+					 'unit'              => $array[ 3],
+					 'orderQty'          => $array[ 4],
+					 'shippedQty'        => $array[ 5],
+					 'unitPrice'         => $array[ 6],
+					 'price'             => $array[ 7],
+					 'spoilageAllowance' => $array[ 8],
+					 'totalAllowance'    => $array[ 9],
+					 'totalPrice'        => $array[10] };
+		push @items, $item;
+	}
+	$sth->finish();
+
     return (\%invoice, \@items);
 }
 
@@ -604,7 +644,7 @@ my $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$dbhost;port=$dbport;options=
 
 my %form_data = get_form_data();
 my $method = $ENV{'REQUEST_METHOD'};
-if ($method == 'GET') {
+if ($method eq 'GET') {
 	my $order_no = $form_data{'order'};
 	my $output = $form_data{'output'};
 
