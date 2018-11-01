@@ -135,17 +135,17 @@ sub generate_pdf {
 
 	$yPos -= $lh * 6;
 
-	my %table = ("itemNo" =>             6,
-	             "description" =>       27,
-	             "orderNo" =>           10,
-	             "unit" =>               5,
-	             "orderQty" =>           6,
-	             "shippedQty" =>         8,
-	             "unitPrice" =>          6,
-	             "price" =>              6,
-	             "spoilageAllowance" => 10,
-	             "totalAllowance" =>    10,
-	             "totalPrice" =>         6
+	my %table = ("itemNo" =>            5.5,
+	             "description" =>        27,
+	             "orderNo" =>           9.5,
+	             "unit" =>                5,
+	             "orderQty" =>          5.5,
+	             "shippedQty" =>        7.5,
+	             "unitPrice" =>           6,
+	             "price" =>             7.5,
+	             "spoilageAllowance" => 9.5,
+	             "totalAllowance" =>    9.5,
+	             "totalPrice" =>        7.5
 	             );
 
 	$table{'description'}       += $table{'itemNo'};
