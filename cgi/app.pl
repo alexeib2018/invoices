@@ -537,27 +537,62 @@ sub load_pdf_data {
 
 	my @items = ($item1, $item2, $item3);
 
-	my %invoice = ("orderNo" => "SO345372",
-	               "orderDate" => "2018-10-09",
-	               "billToName" => "Chevron #5212 McLane Southern California #812131",
-	               "billToAddress" => "220 Sycamore Rd",
-	               "billToCity" => "San Ysidro CA 92173",
-	               "shipToName" => "Chevron #5212 McLane Southern California #812131",
-	               "shipToAddress" => "220 Sycamore Rd",
-	               "shipToCity" => "San Ysidro CA 92173",
-	               "terms" => "30D",
-	               "shipVia" => "HOUSE",
-	               "shipDate" => "2018-10-09",
-	               "dueDate" => "2018-10-27",
-	               "account" => "C0002931",
-	               "poNumber" => "111",
-	               "poDate" => "2018-10-09",
-	               "salesPerson" => "HOUSE",
-	               "subtotal" => "13.29",
-	               "totalAllowance" => "-2.00",
-	               "tax" => "0.00",
-	               "total" => "11.29"
-	              );
+	my $invoice_query = "SELECT account,
+ 								order_no,
+ 								order_date,
+ 								bill_to_name,
+ 								bill_to_address,
+ 								bill_to_city,
+ 								ship_to_name,
+ 								ship_to_address,
+ 								ship_to_city,
+ 								terms,
+ 								ship_via,
+ 								ship_date,
+ 								due_date,
+ 								po_number,
+ 								po_date,
+ 								sales_person,
+ 								allowance_percent,
+ 								subtotal,
+ 								total_allowance,
+ 								tax,
+ 								total
+ 						   FROM invoice_orders
+ 						  WHERE order_no='$order_no'";
+
+	my $sth = $dbh->prepare($invoice_query);
+	my $rv = $sth->execute();
+	if (!defined $rv) {
+	  print "Error in request: " . $dbh->errstr . "\n";
+	  exit(0);
+	}
+
+	my %invoice;
+	while (my @array = $sth->fetchrow_array()) {
+		$invoice{'account'}          = $array[ 0];
+ 		$invoice{'orderNo'}          = $array[ 1];
+ 		$invoice{'orderDate'}        = $array[ 2];
+ 		$invoice{'billToName'}       = $array[ 3];
+ 		$invoice{'billToAddress'}    = $array[ 4];
+ 		$invoice{'billToCity'}       = $array[ 5];
+ 		$invoice{'shipToName'}       = $array[ 6];
+ 		$invoice{'shipToAddress'}    = $array[ 7];
+ 		$invoice{'shipToCity'}       = $array[ 8];
+ 		$invoice{'terms'}            = $array[ 9];
+ 		$invoice{'shipVia'}          = $array[10];
+ 		$invoice{'shipDate'}         = $array[11];
+ 		$invoice{'dueDate'}          = $array[12];
+ 		$invoice{'poNumber'}         = $array[13];
+ 		$invoice{'poDate'}           = $array[14];
+ 		$invoice{'salesPerson'}      = $array[15];
+ 		$invoice{'allowancePercent'} = $array[16];
+ 		$invoice{'subtotal'}         = $array[17];
+ 		$invoice{'totalAllowance'}   = $array[18];
+ 		$invoice{'tax'}              = $array[19];
+ 		$invoice{'total'}            = $array[20];
+	}
+	$sth->finish();
 
     return (\%invoice, \@items);
 }

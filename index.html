@@ -82,13 +82,13 @@
              		    <input type="button"
                        class="form-control btn-success"
                        style="width:300px; margin:10px;"
-                       onclick="document.location.href='/cgi/app.pl?order=SO345372&invoice=2&output=file'"
+                       @click="download_invoice()"
                        value="Download Invoice">
 
                     <input type="button"
                        class="form-control btn-success"
                        style="width:300px; margin:10px;"
-                       onclick="printJS('/cgi/invoice_pdf.pl?order=SO345372&invoice=2&output=pdf')"
+                       @click="print_invoice()"
                        value="Print Invoice">
               	</form>
             </div>
@@ -129,6 +129,16 @@
                              {account: 'C0000087', order_no:'SO347903'},
                              {account: 'C0000087', order_no:'SO349130'}],
                     order: ''
+                }
+            },
+            methods: {
+                download_invoice: function() {
+                    var url='/cgi/app.pl?order=' + this.order + '&invoice=2&output=file'
+                    document.location.href = url
+                },
+                print_invoice: function() {
+                    var url='/cgi/app.pl?order=' + this.order + '&invoice=2&output=pdf'
+                    printJS(url)
                 }
             },
             mounted: function() {
