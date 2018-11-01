@@ -316,7 +316,7 @@ sub generate_pdf {
 	}
 	$show_table_on = 0;
 
-	$yPos -= $lh;
+    new_line($lh, $lh*4);
 
 	$pdf->setAlign('Right');
 
@@ -325,48 +325,30 @@ sub generate_pdf {
 	$pdf->setAddTextPos($width - $margin - $pp, $yPos);
 	$pdf->addText($invoice{'subtotal'});
 
-	$yPos -= $lh;
-
-	$pdf->setAddTextPos($width - $margin - 50, $yPos);
+	$pdf->setAddTextPos($width - $margin - 50, $yPos - $lh);
 	$pdf->addText("Total Allowance:");
-	$pdf->setAddTextPos($width - $margin - $pp, $yPos);
+	$pdf->setAddTextPos($width - $margin - $pp, $yPos - $lh);
 	$pdf->addText($invoice{'totalAllowance'});
 
-	$yPos -= $lh;
-
-	$pdf->setAddTextPos($width - $margin - 50, $yPos);
+	$pdf->setAddTextPos($width - $margin - 50, $yPos - $lh*2);
 	$pdf->addText("Tax:");
-	$pdf->setAddTextPos($width - $margin - $pp, $yPos);
+	$pdf->setAddTextPos($width - $margin - $pp, $yPos - $lh*2);
 	$pdf->addText($invoice{'tax'});
 
-	$yPos -= $lh;
-
-	$pdf->setAddTextPos($width - $margin - 50, $yPos);
+	$pdf->setAddTextPos($width - $margin - 50, $yPos - $lh*3);
 	$pdf->addText("Total:");
-	$pdf->setAddTextPos($width - $margin - $pp, $yPos);
+	$pdf->setAddTextPos($width - $margin - $pp, $yPos - $lh*3);
 	$pdf->addText($invoice{'total'});
 
-	$pdf->setAddTextPos($margin + 8, $yPos + 3);
+	$pdf->setAddTextPos($margin + 8, $yPos + 3 - $lh*3);
 	$pdf->addText("X");
 
 	$pdf->setGfxLineWidth(2);
-	$pdf->drawLine($margin, $yPos, $width - $margin - 150, $yPos);
+	$pdf->drawLine($margin, $yPos - $lh*3, $width - $margin - 150, $yPos - $lh*3);
 	$pdf->setGfxLineWidth(1);
 
 	reset_font();
-
-	$yPos -= $lh*3;
-
-
-	# for (my $i = 0; $i <= $#lines; $i++) {
-	#   $pdf->setAddTextPos($margin, $yPos - $lh*$i);
-	#   $pdf->addText( $lines[$i] );
-	# }
-	#
-	# $yPos -= 50;
-	#
-	# $pdf->setAddTextPos($margin, $yPos);
-	# $pdf->addText( $lines[0] );
+	$yPos -= $lh * 5;
 
 
 	my $notice1 = "The Brown Bag Sandwich Company liability shall be limited exclusively to replacing the purchased product (only) in question without
@@ -383,12 +365,14 @@ sub generate_pdf {
 	 expenses as part of an action to collect on this invoice. Actual attorney`s fees incurred in bringing any action to collect on this invoice
 	 and/or enforcing any judgment granted and interest shall be considered as additional sums owed in connection with this transaction.";
 
+    new_line($lh, $lh*4);
 	$pdf->addParagraph($notice1, $margin, $yPos, $width-$margin*2, $lh*4, 25, $lh);
-	$yPos -= $lh*4;
+
+    new_line($lh*4, $lh*5);
 	$pdf->addParagraph($notice2, $margin, $yPos, $width-$margin*2, $lh*5, 25, $lh);
-	$yPos -= $lh*5;
+
+    new_line($lh*4, $lh*5);
 	$pdf->addParagraph($notice3, $margin, $yPos, $width-$margin*2, $lh*5, 25, $lh);
-	$yPos -= $lh*5;
 
 	return $pdf->Finish(\&footer);
 }
