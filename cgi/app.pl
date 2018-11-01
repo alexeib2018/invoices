@@ -22,12 +22,22 @@ my $margin = 15;
 my $lh = 13;
 my $pp = 2;
 my $yPos = $height - $margin - $lh;
+my $show_table_on = 0;
+my %table = ("itemNo" =>            5.5,
+             "description" =>        27,
+             "orderNo" =>           9.5,
+             "unit" =>                5,
+             "orderQty" =>          5.5,
+             "shippedQty" =>        7.5,
+             "unitPrice" =>           6,
+             "price" =>             7.5,
+             "spoilageAllowance" => 9.5,
+             "totalAllowance" =>    9.5,
+             "totalPrice" =>        7.5
+             );
 
 
-sub show_header {
-	my $table_ref = shift;
-	my %table = %{$table_ref};
-
+sub show_table_header {
 	my $hh = $lh*2;
 
 	$pdf->shadeRect($margin, $yPos, $width-$margin, $yPos - $hh, '#AAA');
@@ -98,7 +108,20 @@ sub show_header {
 	$pdf->setAddTextPos($width - $margin - $pp, $yPos - $lh*2 + 4);
 	$pdf->addText("Price");
 	reset_font();
+
+	$yPos -= $lh * 3 -1;
 }
+
+
+sub new_page {
+	$pdf->newpage();
+	$yPos = $height - $margin - $lh*2;
+
+	if ($show_table_on) {
+		show_table_header();
+	}
+}
+
 
 sub generate_pdf {
     my $invoice_ref = shift;
@@ -108,9 +131,7 @@ sub generate_pdf {
     my @items = @{ $items_ref };
 
 	reset_font();
-
-	$pdf->newpage();
-	$yPos = $height - $margin - $lh*2;
+	new_page();
 
 	$pdf->setAddTextPos($margin, $yPos);
 	$pdf->addText("Fresh Grill/Brown Bag");
@@ -210,19 +231,6 @@ sub generate_pdf {
 
 	$yPos -= $lh * 6;
 
-	my %table = ("itemNo" =>            5.5,
-	             "description" =>        27,
-	             "orderNo" =>           9.5,
-	             "unit" =>                5,
-	             "orderQty" =>          5.5,
-	             "shippedQty" =>        7.5,
-	             "unitPrice" =>           6,
-	             "price" =>             7.5,
-	             "spoilageAllowance" => 9.5,
-	             "totalAllowance" =>    9.5,
-	             "totalPrice" =>        7.5
-	             );
-
 	$table{'description'}       += $table{'itemNo'};
 	$table{'orderNo'}           += $table{'description'};
 	$table{'unit'}              += $table{'orderNo'};
@@ -258,10 +266,9 @@ sub generate_pdf {
 	$table{'description'}       = $table{'itemNo'};
 	$table{'itemNo'}            = 0;
 
-	show_header(\%table);
+	show_table_header();
 
-	$yPos -= $lh * 3 -1;
-
+	$show_table_on = 1;
 	for (my $i = 0; $i <= $#items; $i++) {
 	  $pdf->setAddTextPos($margin + $pp, $yPos);
 	  $pdf->addText($items[$i]{'itemNo'});
@@ -291,6 +298,7 @@ sub generate_pdf {
 
 	  $yPos -= $lh + 2;
 	}
+	$show_table_on = 0;
 
 	$yPos -= $lh;
 
