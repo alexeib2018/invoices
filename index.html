@@ -123,11 +123,7 @@
             el: '#app',
             data: function() {
                 return {
-                    orders: [{account: 'C0000011', order_no:'SO351424'},
-                             {account: 'C0000087', order_no:'SI101670'},
-                             {account: 'C0000087', order_no:'SI101675'},
-                             {account: 'C0000087', order_no:'SO347903'},
-                             {account: 'C0000087', order_no:'SO349130'}],
+                    orders: [],
                     order: ''
                 }
             },
@@ -142,7 +138,13 @@
                 }
             },
             mounted: function() {
-                // this.orders = 'SO345372'
+                var self = this;
+                var params = new FormData();
+                params.append('action', 'get_order_list');
+                axios.post('/cgi/app.pl', params)
+                     .then(function(data) {
+                          self.orders = data.data;
+                      })
             }
         })
     </script>

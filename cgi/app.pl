@@ -499,44 +499,6 @@ sub load_pdf_data {
 	# = qty * spoilage_allowance                    invoice_items.total_allowance
 	# = price + total_allowance                     invoice_items.total_price
 
-	my $item1 = {"itemNo" => "10237",
-	             "description" => "FG Diced Onions, tub",
-	             "unit" => "Each",
-	             "orderQty" => "3",
-	             "shippedQty" => "3",
-	             "unitPrice" => "2.53",
-	             "price" => "7.59",
-	             "spoilageAllowance" =>"-0.38",
-	             "totalAllowance" => "-1.14",
-	             "totalPrice" => "6.45"
-	             };
-
-	my $item2 = {"itemNo" => "11047",
-	             "description" => "FG Grilled Chicken Caesar Wrap",
-	             "unit" => "Each",
-	             "orderQty" => "1",
-	             "shippedQty" => "1",
-	             "unitPrice" => "2.85",
-	             "price" => "2.85",
-	             "spoilageAllowance" =>"-0.43",
-	             "totalAllowance" => "-0.43",
-	             "totalPrice" => "2.42"
-	             };
-
-	my $item3 = {"itemNo" => "11048",
-	             "description" => "FG Zesty Turkey Wrap",
-	             "unit" => "Each",
-	             "orderQty" => "1",
-	             "shippedQty" => "1",
-	             "unitPrice" => "2.85",
-	             "price" => "2.85",
-	             "spoilageAllowance" =>"-0.43",
-	             "totalAllowance" => "-0.43",
-	             "totalPrice" => "2.42"
-	             };
-
-	# my @items = ($item1, $item2, $item3);
-
 	my $invoice_query = "SELECT account,
  								order_no,
  								order_date,
@@ -638,6 +600,39 @@ sub load_pdf_data {
 }
 
 
+sub get_order_list {
+	my $dbh = shift;
+
+	my $query = "SELECT account,
+ 						order_no
+ 				   FROM invoice_orders
+ 			   ORDER BY id";
+
+	my $sth = $dbh->prepare($query);
+	my $rv = $sth->execute();
+	if (!defined $rv) {
+	  print "Error in request: " . $dbh->errstr . "\n";
+	  exit(0);
+	}
+
+	my $orders = '[';
+	my $i = 0;
+	while (my @array = $sth->fetchrow_array()) {
+		my $account = $array[0];
+		my $order_no = $array[1];
+		if ($i > 0) {
+			$orders .= ',';
+		}
+		$orders .= '{"account":"'.$account.'","order_no":"'.$order_no.'"}';
+		$i++;
+	}
+	$orders .= ']';
+	$sth->finish();
+
+	$orders;
+}
+
+
 my $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$dbhost;port=$dbport;options=$dboptions;tty=$dbtty","$username","$password",
         {PrintError => 0});
 
@@ -664,6 +659,11 @@ if ($method eq 'GET') {
 
 } else {
 	my $action = $form_data{'action'};
+
+	my $orders = get_order_list($dbh);
+
+	print "Content-Type: application/json\n\n";
+	print "$orders\n";
 }
 
 
