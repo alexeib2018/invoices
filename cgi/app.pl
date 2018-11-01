@@ -23,6 +23,7 @@ my $lh = 13;
 my $pp = 2;
 my $yPos = $height - $margin - $lh;
 my $show_table_on = 0;
+my $invoice_no;
 my %table = ("itemNo" =>            5.5,
              "description" =>        27,
              "orderNo" =>           9.5,
@@ -115,10 +116,14 @@ sub show_table_header {
 
 sub new_page {
 	$pdf->newpage();
+	my $pages = $pdf->pages;
+
 	$yPos = $height - $margin - $lh*2;
 
 	if ($show_table_on) {
 		show_table_header();
+	} elsif( $pages >= 2 ) {
+		$yPos -= $lh;
 	}
 }
 
@@ -145,6 +150,8 @@ sub generate_pdf {
 
 	my %invoice = %{ $invoice_ref };
     my @items = @{ $items_ref };
+
+	$invoice_no = $invoice{'orderNo'};
 
 	reset_font();
 	new_page();
@@ -371,7 +378,7 @@ sub generate_pdf {
     new_line($lh*4, $lh*5);
 	$pdf->addParagraph($notice2, $margin, $yPos, $width-$margin*2, $lh*5, 25, $lh);
 
-    new_line($lh*4, $lh*5);
+    new_line($lh*5, $lh*5);
 	$pdf->addParagraph($notice3, $margin, $yPos, $width-$margin*2, $lh*5, 25, $lh);
 
 	return $pdf->Finish(\&footer);
@@ -399,10 +406,17 @@ sub reset_font {
 sub footer {
   my $pages = $pdf->pages;
 
-  $pdf->setFont("Helvetica");
-  $pdf->setSize(10);
   for (1 .. $pages) {
     $pdf->openpage($_);
+    reset_font();
+
+    if ($_ >= 2) {
+		$pdf->setAddTextPos($margin, $height - $margin - $lh);
+		$pdf->addText("Invoice number: $invoice_no");
+    }
+
+	$pdf->setFont("Helvetica");
+	$pdf->setSize(10);
     $pdf->setAlign('Right');
     $pdf->setAddTextPos($width-$margin, $margin);
     $pdf->addText("Page $_ of $pages");
